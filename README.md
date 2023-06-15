@@ -16,19 +16,29 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### 1: Run Express:
+Express manages the gamestate & handles any requests to view or mutate it.
+
+- Compile and run:
+```sh
+node server.js
+```
+---
+
+### 2: Run VueJS site:
+VueJs server handles the website page loading etc.
+
+- Compile and Hot-Reload for Development
 
 ```sh
 npm run dev
 ```
-
-### Compile and Minify for Production
+- Compile and Minify for Production
 
 ```sh
 npm run build
 ```
-
-### Lint with [ESLint](https://eslint.org/)
+- Lint with [ESLint](https://eslint.org/)
 
 ```sh
 npm run lint
