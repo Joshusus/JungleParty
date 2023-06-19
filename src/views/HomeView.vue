@@ -1,9 +1,13 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+import CommandBar from '../components/CommandBar.vue'
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+
+    <div class="page">
+      Welcome to The Dark Forest
+      <CommandBar />
+    </div>
   </main>
 </template>

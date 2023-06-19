@@ -1,89 +1,91 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
-import CommandBar from './components/CommandBar.vue'
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <img alt="Vue logo" class="logo" src="@/assets/logo.png" width="125" height="125" />
 
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
+        <HelloWorld msg="You did it!" />
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
       </nav>
-
-      <CommandBar></CommandBar>
-
     </div>
   </header>
+  <hr/>
 
   <RouterView />
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  margin-top: 2rem;
+  color: #2c3e50;
+  margin-top: 0px;
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
+body {
+  background-image: url("./assets/background.png");
+  background-repeat: repeat;
 }
 
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
+.page {
+  background-color: rgb(24, 21, 48);
+  color: ivory;
+  padding: 5px;
 }
 
-nav a {
+h3 {
+  margin: 40px 0 0;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
   display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+  margin: 0 10px;
 }
 
-nav a:first-of-type {
-  border: 0;
+a {
+  color: #42b983;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.hello {
+  background-color: rgb(24, 21, 48);
+  color: ivory;
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+hr {
+  overflow: visible;
+  padding: 0;
+  border: none;
+  height: 1px;
+  background-image: linear-gradient(to right,
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0.75),
+      rgba(0, 0, 0, 0));
+  text-align: center;
+}
 
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+hr:after {
+  content: " ";
+  display: inline-block;
+  position: relative;
+  top: -1.8em;
+  font-size: 1.5em;
+  padding: 19px 1.75em;
+  background: url(./assets/calendar64.png) no-repeat scroll center;
+  background-size: 30px 30px;
+  height: 50px;
 }
 </style>
