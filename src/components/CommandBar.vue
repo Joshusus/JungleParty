@@ -2,7 +2,8 @@
 export default {
   data() {
     return {
-      command: ''
+      command: '',
+      gamestate: {}
     };
   },
   methods: {
@@ -23,7 +24,22 @@ export default {
         .catch(error => {
           console.error(error);
         });
+    },
+    fetchGamestate() {
+      // Fetch the game state from the server on page load
+      fetch('http://localhost:3000/gamestate')
+        .then(response => response.json())
+        .then(data => {
+          this.gamestate = data;
+        })
+        .catch(error => {
+          console.error(error);
+        });
     }
+  },
+  mounted() {
+    // Call the fetchGamestate method when the component is mounted (on page load)
+    this.fetchGamestate();
   }
 };
 </script>
@@ -31,7 +47,15 @@ export default {
 <template>
   <div class="commandbar">
     <div style="background-color:darkseagreen">
-      Please enter a command:
+      <!--<p>Gamestate: '{{ gamestate.Actions }}'</p>-->
+      
+      Actions:
+      <ul>
+        <li v-for="action in gamestate.Actions" :key="action">{{ action }}</li>
+      </ul>   
+
+      <p>Please enter a command: </p>
+      <p>Format: <b> ACTION PARAM1 PARAM2 ... </b></p>
       <input type="text" v-model="command" />
       <button @click="sendCommand">Send</button>
     </div>

@@ -25,6 +25,20 @@ app.post('/command', (req, res) => {
   });
 });
 
+// Define the game state endpoint
+app.get('/gamestate', (req, res) => {
+  // Read the game state from the JSON file
+  fs.readFile('./gamestate.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error reading game state.');
+    } else {
+      const gamestate = JSON.parse(data);
+      res.json(gamestate);
+    }
+  });
+});
+
 // Start the server
 app.listen(3000, () => {
   console.log('Server listening on port 3000');

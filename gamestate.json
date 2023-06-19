@@ -1,5 +1,1 @@
-{
-    "Items": [],
-    "Rooms": [],
-    "Actions": []
-}
+{"Items":[],"Rooms":[],"Actions":["Explore", "Open", "Torch"],"test":"test"}
