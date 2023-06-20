@@ -12,55 +12,20 @@ app.post('/command', (req, res) => {
   const gamestate = require('./gamestate.json');
 
   const command = req.body.command;
-  switch(req.body.command) {
+  console.log("Command: '" + command + "'");
+  switch (command) {
     case "Explore":
-      let roomName = req.body.Params["Room"];
-      
-      let room = gamestate.Rooms.find(room => room.Name = "HomeRoom");
-      if (room) {
-        let newItems = room.Items;
-
-        // Update Items List
-        let newItemNames = newItems.map(item => item.Name);
-        gamestate.Items.push.apply(gamestate.Items, newItemNames);
-
-        //Clear Items in room
-        room.Items = [];
-
-        // Update Actions List
-        const newActions = newItems
-        .filter(item => item.hasOwnProperty('Actions'))
-        .map(item => item.Actions)
-        .flatMap(actions => actions)
-        .filter(action => !gamestate.Actions.some(existingAction => existingAction.Name === action.Name))
-
-        gamestate.Actions.push.apply(gamestate.Actions, newActions);
-
-        var notificationText = "Exploring '" + roomName + "':";
-        if (newItems && newItems.length > 0) {
-          notificationText += " Found " + newItems.length.toString() + " items!"
-        }
-        if (newActions && newActions.length > 0) {
-          notificationText += " " + newItems.length.toString() + " new action unlocked!"
-        }
-        RaiseNotification(gamestate.Notifications, notificationText);
-
-      }
-      
+      ActionExplore(req.body, gamestate);
       break;
     case "Open":
-
+      ActionOpen(req.body, gamestate);
       break;
-      case "Torch":
-        break;
+    case "Torch":
+      ActionTorch(req.body, gamestate);
+      break;
     default:
       console.log("Command '" + req.body.command + "' not recognized")
   }
-
-
-
-  // Update the JSON file with a test property
-  gamestate.test = command;
 
   // Save the updated game state to the JSON file
   fs.writeFile('./gamestate.json', JSON.stringify(gamestate), err => {
@@ -92,9 +57,60 @@ app.listen(3000, () => {
   console.log('Server listening on port 3000');
 });
 
-// SHARED FUNCTIONS
+// FUNCTIONS
 
 function RaiseNotification(GameStateNotificationArray, notification) {
   GameStateNotificationArray.push(notification);
   console.log(notification);
+}
+
+function ActionExplore(requestBody, gamestate) {
+  let roomName = requestBody.Params["Room"].toLowerCase();
+
+  let room = gamestate.Rooms.find(room => room.Name.toLowerCase() == roomName);
+  if (room) {
+    let newItems = room.Items;
+
+    // Update Items List
+    let newItemNames = newItems.map(item => item.Name);
+    gamestate.Items.push.apply(gamestate.Items, newItemNames);
+
+    //Clear Items in room
+    room.Items = [];
+
+    // Update Actions List
+    const newActions = newItems
+      .filter(item => item.hasOwnProperty('Actions'))
+      .map(item => item.Actions)
+      .flatMap(actions => actions)
+      .filter(action => !gamestate.Actions.some(existingAction => existingAction.Name === action.Name))
+
+    gamestate.Actions.push.apply(gamestate.Actions, newActions);
+
+    let notificationText = "Exploring '" + roomName + "':";
+    if (newItems && newItems.length > 0) {
+      notificationText += " Found " + newItems.length.toString() + " items!"
+    }
+    if (newActions && newActions.length > 0) {
+      notificationText += " " + newItems.length.toString() + " new action unlocked!"
+    }
+    RaiseNotification(gamestate.Notifications, notificationText);
+  }
+}
+
+function ActionOpen(requestBody, gamestate) {
+  let roomName = requestBody.Params["FromRoom"].toLowerCase();
+  let objectName = requestBody.Params["Object"].toLowerCase();
+
+  let room = gamestate.Rooms.find(room => room.Name.toLowerCase() == roomName);
+  if (room) {
+
+    let notificationText = "Opening '" + objectName + "' in room '" + roomName + "':";
+    RaiseNotification(gamestate.Notifications, notificationText);
+  }
+  //TODO
+}
+
+function ActionTorch(requestBody, gamestate) {
+  //TODO
 }

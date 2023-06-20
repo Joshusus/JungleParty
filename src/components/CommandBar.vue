@@ -4,7 +4,8 @@ export default {
     return {
       command: '',
       sendParams: [],
-      gamestate: {}
+      gamestate: {},
+      currentRoom: 'HomeRoom'
     };
   },
   computed: {
@@ -24,6 +25,10 @@ export default {
         const inputField = document.getElementById(param);
         paramValues[param] = inputField.value;
       });
+
+      if (this.currentRoom) {
+        paramValues["FromRoom"] = this.currentRoom;
+      }
 
       // Send the command to the server using AJAX
       fetch('http://localhost:3000/command', {
@@ -67,9 +72,12 @@ export default {
 
 <template>
   <div class="commandbar">
-    <div style="background-color:darkseagreen">
+    <div>
       
 
+      <div style="background-color:darkseagreen">
+
+        <div v-if="currentRoom">You are in Room: {{currentRoom}}</div>
 
       <p>Please enter a command: </p>
       Action: 
@@ -84,9 +92,9 @@ export default {
       </div>
     </div>      
       <button @click="sendCommand">Send</button>
-
+    </div>
       
-      <h2>Story:</h2>
+      <h2>-- Story --</h2>
       <div v-for="notification in notifications" :key="notification">
         {{notification}}
       </div>

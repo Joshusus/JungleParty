@@ -6,7 +6,7 @@ import CommandBar from '../components/CommandBar.vue'
   <main>
 
     <div class="page">
-      Welcome to The Lagoon
+      <h2>Explore</h2>
       <CommandBar />
     </div>
   </main>
