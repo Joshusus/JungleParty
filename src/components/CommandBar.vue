@@ -3,23 +3,44 @@ export default {
   data() {
     return {
       command: '',
+      sendParams: [],
       gamestate: {}
     };
   },
+  computed: {
+  currentCommand() {
+    return this.gamestate.Actions.find(action => action.Name === this.command);
+  },
+  notifications() {
+    if (!this.gamestate.Notifications) return [];
+    return this.gamestate.Notifications.slice().reverse();
+  }
+},
   methods: {
     sendCommand() {
+      // Get the values of the input fields
+      const paramValues = {};
+      this.currentCommand.Params.forEach(param => {
+        const inputField = document.getElementById(param);
+        paramValues[param] = inputField.value;
+      });
+
       // Send the command to the server using AJAX
       fetch('http://localhost:3000/command', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ command: this.command })
+        body: JSON.stringify({
+        command: this.command,
+        Params: paramValues,
+       })
       })
         .then(response => response.json())
         .then(data => {
           // Handle the response from the server
           console.log(data);
+          this.fetchGamestate();
         })
         .catch(error => {
           console.error(error);
@@ -47,18 +68,30 @@ export default {
 <template>
   <div class="commandbar">
     <div style="background-color:darkseagreen">
-      <!--<p>Gamestate: '{{ gamestate.Actions }}'</p>-->
       
-      Actions:
-      <ul>
-        <li v-for="action in gamestate.Actions" :key="action">{{ action }}</li>
-      </ul>   
+
 
       <p>Please enter a command: </p>
-      <p>Format: <b> ACTION PARAM1 PARAM2 ... </b></p>
-      <input type="text" v-model="command" />
+      Action: 
+      <select list="commands" id="command" name="command" v-model="command">
+          <option v-for="action in gamestate.Actions" :key="action.Name">{{action.Name}}</option>
+      </select>
+     
+      <div v-if="command">
+      <div v-for="param in currentCommand.Params" :key="param">
+        {{param}}:
+        <input class="actionParam" type="text" :id="param" />
+      </div>
+    </div>      
       <button @click="sendCommand">Send</button>
+
+      
+      <h2>Story:</h2>
+      <div v-for="notification in notifications" :key="notification">
+        {{notification}}
+      </div>
     </div>
+
   </div>
 </template>
 

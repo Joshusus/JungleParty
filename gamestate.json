@@ -1,1 +1,29 @@
-{"Items":[],"Rooms":[],"Actions":["Explore", "Open", "Torch"],"test":"test"}
+{
+  "Items": [],
+  "Rooms": [
+    {
+      "Name": "HomeRoom",
+      "Items": [
+        {
+          "Name": "Water Bottle"
+        },
+        {
+          "Name": "Flashlight",
+          "Actions": [{ "Name": "Torch", "Params": ["Room"] }]
+        },
+        {
+          "Name": "Key",
+          "Actions": [{ "Name": "Key", "Params": ["Object"] }]
+        }
+      ],
+      "Objects": []
+    }
+  ],
+  "Actions": [
+    { "Name": "Explore", "Params": ["Room"] },
+    { "Name": "Open", "Params": ["Item"] },
+    { "Name": "Torch", "Params": ["Room"] }
+  ],
+  "Notifications": [],
+  "test": "Explore"
+}
