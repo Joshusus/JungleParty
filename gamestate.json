@@ -24,6 +24,8 @@
     { "Name": "Open", "Params": ["Item"] },
     { "Name": "Torch", "Params": ["Room"] }
   ],
-  "Notifications": [],
+  "Notifications": [
+    "Welcome to the Lagoon! Anticipating the riches and challenges ahead, the Adventurers slink through the dark tunnel that leads into the maze of The Lagoon... Good luck - for you will need it!"
+  ],
   "test": "Explore"
 }
