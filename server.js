@@ -10,18 +10,19 @@ app.use(cors()); // Enable CORS
 app.post('/command', (req, res) => {
 
   const gamestate = require('./gamestate.json');
-
   const command = req.body.command;
+  let responseObject = null;
+
   console.log("Command: '" + command + "'");
   switch (command) {
     case "Explore":
-      ActionExplore(req.body, gamestate);
+      responseObject = ActionExplore(req.body, gamestate);
       break;
     case "Open":
-      ActionOpen(req.body, gamestate);
+      responseObject = ActionOpen(req.body, gamestate);
       break;
     case "Torch":
-      ActionTorch(req.body, gamestate);
+      responseObject = ActionTorch(req.body, gamestate);
       break;
     default:
       console.log("Command '" + req.body.command + "' not recognized")
@@ -33,7 +34,11 @@ app.post('/command', (req, res) => {
       console.error(err);
       res.status(500).send('Error updating game state.');
     } else {
-      res.json({ message: 'Game state updated.' });
+
+      if (!responseObject) {
+        responseObject = { message: 'Game state updated.' };
+      }
+      res.json(responseObject);
     }
   });
 });
@@ -58,7 +63,6 @@ app.listen(3000, () => {
 });
 
 // FUNCTIONS
-
 function RaiseNotification(GameStateNotificationArray, notification) {
   GameStateNotificationArray.push(notification);
   console.log(notification);
@@ -67,7 +71,7 @@ function RaiseNotification(GameStateNotificationArray, notification) {
 function ActionExplore(requestBody, gamestate) {
   let roomName = requestBody.Params["Room"].toLowerCase();
 
-  let room = gamestate.Rooms.find(room => room.Name.toLowerCase() == roomName);
+  let room = gamestate.Rooms.find(room => room.Discovered && room.Name.toLowerCase() == roomName);
   if (room) {
     let newItems = room.Items;
 
@@ -87,14 +91,34 @@ function ActionExplore(requestBody, gamestate) {
 
     gamestate.Actions.push.apply(gamestate.Actions, newActions);
 
-    let notificationText = "Exploring '" + roomName + "':";
+    let responseText = "Exploring '" + roomName + "': ";
+    let notificationText = "Exploring '" + roomName + "': ";
+
+    if (room.Objects && room.Objects.length > 0) {
+      const objectInfoArray = room.Objects.map(obj => {
+        if (obj.Lock) {
+          return  obj.Name + " (locked by " + obj.Lock + ")";
+        } else {
+          return  obj.Name;
+        }
+      });
+      responseText += "This room has objects: " + objectInfoArray.join(", ") + ". ";
+    }
+
     if (newItems && newItems.length > 0) {
-      notificationText += " Found " + newItems.length.toString() + " items!"
+      notificationText += " Found " + newItems.length.toString() + " items!";
+      responseText += " Found " + newItems.map(obj => obj.Name).join(", ");
     }
     if (newActions && newActions.length > 0) {
-      notificationText += " " + newItems.length.toString() + " new action unlocked!"
-    }
+      notificationText += " " + newItems.length.toString() + " new action unlocked!";
+      responseText += ": " + newItems.length.toString() + " new action unlocked!";
+    } else responseText += "!";
     RaiseNotification(gamestate.Notifications, notificationText);
+
+    return  { message: responseText };
+  } else {
+    
+    return  { message: "Room with name '" + roomName + "' has not been discovered." };
   }
 }
 
@@ -104,11 +128,42 @@ function ActionOpen(requestBody, gamestate) {
 
   let room = gamestate.Rooms.find(room => room.Name.toLowerCase() == roomName);
   if (room) {
+    let notificationText = "Opening '" + objectName + "' in room '" + roomName + "': ";
+    let responseText = "Opening '" + objectName + "' in room '" + roomName + "': ";
+    let responseRoom = null;
 
-    let notificationText = "Opening '" + objectName + "' in room '" + roomName + "':";
+    let object = room.Objects.find(object => object.Name.toLowerCase() == objectName);
+
+    if (object) {
+      // Door
+      if (object.Name.toLowerCase().includes("door")) {
+        if (object.Lock) {
+          responseText += "This Door is locked by '" + object.Lock + "'.";
+          return  { message: responseText };
+        } else {
+          let NewRoomId = object.GoesTo;
+          let newRoom = gamestate.Rooms.find(room => room.Id == NewRoomId);
+          if (newRoom.Discovered) responseText += "You walk through to room " + objectName + ".";
+          else {
+            newRoom.Discovered = true;
+            responseRoom = newRoom.Name;
+            responseText += "You walk through and discover " + newRoom.Name + "!";
+            if (newRoom.Dark) responseText += " This room is very dark...";
+            notificationText += "New room discovered: " + newRoom.Name;
+          }
+        }
+      }
+    } else {
+      responseText += "Could not find object '" + objectName + "'.";
+      return { message: responseText };
+    }
+
     RaiseNotification(gamestate.Notifications, notificationText);
+    return { message: responseText, room: responseRoom };
+  } else {
+    responseText += "Could not find room '" + roomName + "'.";
+    return  { message: responseText };
   }
-  //TODO
 }
 
 function ActionTorch(requestBody, gamestate) {

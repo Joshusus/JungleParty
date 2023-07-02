@@ -5,18 +5,19 @@ export default {
       command: '',
       sendParams: [],
       gamestate: {},
-      currentRoom: 'HomeRoom'
+      currentRoom: 'Entrance',
+      actionResponse: ''
     };
   },
   computed: {
-  currentCommand() {
-    return this.gamestate.Actions.find(action => action.Name === this.command);
+    currentCommand() {
+      return this.gamestate.Actions.find(action => action.Name === this.command);
+    },
+    notifications() {
+      if (!this.gamestate.Notifications) return [];
+      return this.gamestate.Notifications.slice().reverse();
+    }
   },
-  notifications() {
-    if (!this.gamestate.Notifications) return [];
-    return this.gamestate.Notifications.slice().reverse();
-  }
-},
   methods: {
     sendCommand() {
       // Get the values of the input fields
@@ -37,14 +38,16 @@ export default {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-        command: this.command,
-        Params: paramValues,
-       })
+          command: this.command,
+          Params: paramValues,
+        })
       })
         .then(response => response.json())
         .then(data => {
           // Handle the response from the server
           console.log(data);
+          this.actionResponse = data.message;
+          if (data.room) this.currentRoom = data.room;
           this.fetchGamestate();
         })
         .catch(error => {
@@ -73,33 +76,36 @@ export default {
 <template>
   <div class="commandbar">
     <div>
-      
-
-      <div style="background-color:darkseagreen">
-
-        <div v-if="currentRoom">You are in Room: {{currentRoom}}</div>
-
-      <p>Please enter a command: </p>
-      Action: 
-      <select list="commands" id="command" name="command" v-model="command">
-          <option v-for="action in gamestate.Actions" :key="action.Name">{{action.Name}}</option>
-      </select>
-     
-      <div v-if="command">
-      <div v-for="param in currentCommand.Params" :key="param">
-        {{param}}:
-        <input class="actionParam" type="text" :id="param" />
+      <div style="background-color:rgba(5,92,79,255)">
+        <div v-if="currentRoom">You are in Room: {{ currentRoom }}</div>
+        <p>Please enter a command: </p>
+        Action:
+        <select list="commands" id="command" name="command" v-model="command">
+          <option v-for="action in gamestate.Actions" :key="action.Name">{{ action.Name }}</option>
+        </select>
+        <div v-if="command">
+          <div v-for="param in currentCommand.Params" :key="param">
+            {{ param }}:
+            <input class="actionParam" type="text" :id="param" />
+          </div>
+        </div>
+        <button @click="sendCommand">Send</button>
       </div>
-    </div>      
-      <button @click="sendCommand">Send</button>
-    </div>
       
-    <p>&nbsp;</p>
-    <hr class="logo" />
+      <div>
+          <b style="color:hotpink">{{ actionResponse }}</b>
+        </div>
+
+      <p>&nbsp;</p>
+      <hr class="logo" />
+
       <h2>Story</h2>
       <div v-for="notification in notifications" :key="notification">
-        {{notification}}
+        {{ notification }}
       </div>
+
+      <p>&nbsp;</p>
+      <hr class="logo" />
     </div>
 
   </div>
@@ -123,6 +129,7 @@ h3 {
 }
 
 @media (min-width: 1024px) {
+
   .greetings h1,
   .greetings h3 {
     text-align: left;
