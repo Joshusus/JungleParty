@@ -16,6 +16,15 @@ export default {
     notifications() {
       if (!this.gamestate.Notifications) return [];
       return this.gamestate.Notifications.slice().reverse();
+    },
+    defaultParamValue() {
+      return function (param) {
+        if (param === 'Room') {
+          return this.currentRoom;
+        } else {
+          return '';
+        }
+      };
     }
   },
   methods: {
@@ -86,15 +95,15 @@ export default {
         <div v-if="command">
           <div v-for="param in currentCommand.Params" :key="param">
             {{ param }}:
-            <input class="actionParam" type="text" :id="param" />
+            <input class="actionParam" type="text" :id="param" :value="defaultParamValue(param)" />
           </div>
         </div>
         <button @click="sendCommand">Send</button>
       </div>
-      
+
       <div>
-          <b style="color:hotpink">{{ actionResponse }}</b>
-        </div>
+        <b style="color:hotpink">{{ actionResponse }}</b>
+      </div>
 
       <p>&nbsp;</p>
       <hr class="logo" />
