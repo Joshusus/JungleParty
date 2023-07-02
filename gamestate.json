@@ -2,26 +2,368 @@
   "Items": [],
   "Rooms": [
     {
-      "Name": "HomeRoom",
+      "Id": 1,
+      "Name": "Entrance",
       "Items": [
         {
           "Name": "Water Bottle"
         },
         {
-          "Name": "Flashlight",
-          "Actions": [{ "Name": "Torch", "Params": ["Room"] }]
-        },
-        {
-          "Name": "Key",
-          "Actions": [{ "Name": "Key", "Params": ["Object"] }]
+          "Name": "GreenKey",
+          "Actions": [{ "Name": "Key", "Params": ["Colour","Object"] }]
         }
       ],
-      "Objects": []
+      "Objects": [
+        {
+          "Name": "Door1",
+          "GoesTo": 2
+        },
+        {
+          "Name": "Door2",
+          "GoesTo": 9,
+          "Lock": "Riddle4"
+        }
+      ]
+    },
+    {
+      "Id": 2,
+      "Name": "HydroRoom",
+      "Items": [
+        {
+          "Name": "Water Bottle"
+        },
+        {
+          "Name": "Water Bottle"
+        },
+        {
+          "Name": "Water Bottle"
+        },
+        {
+          "Name": "Riddle1Clue",
+          "Clue": "TODO"
+        }
+      ],
+      "Objects": [
+        {
+          "Name": "Door1",
+          "GoesTo": 1
+        },
+        {
+          "Name": "Door2",
+          "GoesTo": 3,
+          "Lock": "GreenKey"
+        }
+      ]
+    },
+    {
+      "Id": 3,
+      "Name": "GreenHouse",
+      "Items": [
+        {
+          "Name": "Riddle2Clue",
+          "Clue": "TODO"
+        }
+      ],
+      "Objects": [
+        {
+          "Name": "Door1",
+          "GoesTo": 2
+        },
+        {
+          "Name": "Door2",
+          "GoesTo": 4,
+          "Lock": "Riddle1"
+        }
+      ]
+    },
+    {
+      "Id": 4,
+      "Name": "GemstoneCave",
+      "Items": [],
+      "Objects": [
+        {
+          "Name": "WaterTank",
+          "CurrentWater": 0,
+          "Target": 4,
+          "Unlocks": "Door3"
+        },
+        {
+          "Name": "Door1",
+          "GoesTo": 3
+        },
+        {
+          "Name": "Door2",
+          "GoesTo": 12
+        },
+        {
+          "Name": "Door3",
+          "GoesTo": 5,
+          "Lock": "WaterTank"
+        }
+      ]
+    },
+    {
+      "Id": 5,
+      "Name": "Labyrinth",
+      "Items": [],
+      "Objects": [
+        {
+          "Name": "Door1",
+          "GoesTo": 4
+        },
+        {
+          "Name": "Door2",
+          "GoesTo": 7,
+          "Lock": "Vines"
+        },
+        {
+          "Name": "Door3",
+          "GoesTo": 6
+        },
+        {
+          "Name": "Door4",
+          "GoesTo": 8,
+          "Lock": "Riddle2"
+        }
+      ]
+    },
+    {
+      "Id": 6,
+      "Name": "FloodedHallway",
+      "Flooded": true,
+      "Items": [
+        {
+          "Name": "GoldCoin"
+        },
+        {
+          "Name": "Flashlight",
+          "Actions": [{ "Name": "TorchExplore", "Params": ["Room"] }]
+        }
+      ],
+      "Objects": [
+        {
+          "Name": "Door1",
+          "GoesTo": 5
+        }
+      ]
+    },
+    {
+      "Id": 7,
+      "Name": "GamblingDen",
+      "Items": [
+        {
+          "Name": "GoldCoin"
+        }
+      ],
+      "Objects": [
+        {
+          "Name": "GambleMachine"
+        },
+        {
+          "Name": "Door1",
+          "GoesTo": 5
+        }
+      ]
+    },
+    {
+      "Id": 8,
+      "Name": "TempleCoatRoom",
+      "Items": [
+      ],
+      "Objects": [
+        {
+          "Name": "Door1",
+          "GoesTo": 5
+        },
+        {
+          "Name": "Door2",
+          "GoesTo": 13,
+          "Lock": "Riddle3"
+        }
+      ]
+    },
+    {
+      "Id": 9,
+      "Name": "DarkShamansRoom",
+      "Dark": true,
+      "Items": [
+        {
+          "Name": "Water Bottle"
+        }
+      ],
+      "Objects": [
+        {
+          "Name": "Door1",
+          "GoesTo": 1
+        },
+        {
+          "Name": "Door2",
+          "GoesTo": 10,
+          "Lock": "RedKey"
+        },
+        {
+          "Name": "Door3",
+          "GoesTo": 11
+        }
+      ]
+    },
+    {
+      "Id": 10,
+      "Name": "TreasureRoom",
+      "Items": [
+        {
+          "Name": "GoldCoin"
+        },
+        {
+          "Name": "GoldCoin"
+        },
+        {
+          "Name": "GoldCoin"
+        },
+        {
+          "Name": "Water Bottle"
+        }
+      ],
+      "Objects": [
+        {
+          "Name": "Door1",
+          "GoesTo": 9
+        }
+      ]
+    },
+    {
+      "Id": 12,
+      "Name": "LockerRoom",
+      "Items": [
+        {
+          "Name": "GoldCoin"
+        },
+        {
+          "Name": "RedKey"
+        }
+      ],
+      "Objects": [
+        {
+          "Name": "Door1",
+          "GoesTo": 11
+        },
+        {
+          "Name": "Door2",
+          "GoesTo": 15,
+          "Lock": "Riddle5"
+        }
+      ]
+    },
+    {
+      "Id": 13,
+      "Name": "DarkFungiRoom",
+      "Dark": true,
+      "Items": [
+        {
+          "Name": "GoldCoin"
+        },
+        {
+          "Name": "RedKey"
+        }
+      ],
+      "Objects": [
+        {
+          "Name": "Door1",
+          "GoesTo": 4
+        }
+      ]
+    },
+    {
+      "Id": 14,
+      "Name": "TempleCourtyard",
+      "Items": [],
+      "Objects": [
+        {
+          "Name": "Door1",
+          "GoesTo": 8
+        },
+        {
+          "Name": "Door2",
+          "GoesTo": 15,
+          "Lock": "Riddle4"
+        }
+      ]
+    },
+    {
+      "Id": 15,
+      "Name": "PuzzleRoom",
+      "Items": [],
+      "Objects": [
+        {
+          "Name": "Door1",
+          "GoesTo": 14
+        },
+        {
+          "Name": "Door2",
+          "GoesTo": 12,
+          "Lock": "Riddle5"
+        },
+        {
+          "Name": "Door3",
+          "GoesTo": 16,
+          "Lock": "BlueKey"
+        },
+        {
+          "Name": "Door4",
+          "GoesTo": 17,
+          "Lock": "Riddle4"
+        }
+      ]
+    },
+    {
+      "Id": 16,
+      "Name": "Armoury",
+      "Items": [
+        {
+          "Name": "GoldCoin"
+        },
+        {
+          "Name": "Flashlight",
+          "Actions": [{ "Name": "TorchExplore", "Params": ["Room"] }]
+        },
+        {
+          "Name": "Machete",
+          "Actions": [{ "Name": "Machete", "Params": ["Object"] }]
+        }
+      ],
+      "Objects": [
+        {
+          "Name": "Door1",
+          "GoesTo": 15
+        }
+      ]
+    },
+    {
+      "Id": 17,
+      "Name": "EmperorsChamber",
+      "Items": [],
+      "Objects": [
+        {
+          "Name": "CoinTank",
+          "CurrentCoins": 0,
+          "Target": 10,
+          "Unlocks": "ExitTunnel"
+        },
+        {
+          "Name": "Door1",
+          "GoesTo": 15
+        },
+        {
+          "Name": "ExitTunnel",
+          "GoesTo": 0
+        }
+      ]
     }
   ],
   "Actions": [
     { "Name": "Explore", "Params": ["Room"] },
-    { "Name": "Open", "Params": ["Object"] }
+    { "Name": "Open", "Params": ["Object"] },
+    { "Name": "Riddle", "Params": ["Object", "Answer"] }
   ],
   "Notifications": [
     "Welcome to the Lagoon! Anticipating the riches and challenges ahead, the Adventurers slink through the dark tunnel that leads into the maze of The Lagoon... Good luck - for you will need it!"
