@@ -28,8 +28,43 @@ a,
   }
 
   #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    /*display: grid;
+    grid-template-columns: 1fr 1fr;*/
     padding: 0 2rem;
   }
+
+
+  hr {
+  
+    overflow: visible;
+    padding: 0;
+    border: none;
+    height: 1px;
+    background-image: linear-gradient(to right,
+        rgba(138, 255, 196, 0),
+        rgba(138, 255, 196, 0.75),
+        rgba(138, 255, 196, 0));
+    text-align: center;
+  }
+  
+  hr.logo:after {
+    content: " ";
+    display: inline-block;
+    position: relative;
+    top: -1.1em;
+    font-size: 1.5em;
+    padding: 19px 1.75em;
+    background: url(./assets/calendar64.png) no-repeat scroll center;
+    background-size: 15px 15px;
+    height: 50px;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Bungee Inline', cursive;
+  }
+  
+  body {
+    font-family: 'Unica One', sans-serif;
+  }
+  
 }

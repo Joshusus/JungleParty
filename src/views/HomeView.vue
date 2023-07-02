@@ -4,8 +4,7 @@ import CommandBar from '../components/CommandBar.vue'
 
 <template>
   <main>
-
-    <div class="page">
+    <div class="page" style="padding-top: 0px;">
       <h2>Explore</h2>
       <CommandBar />
     </div>

@@ -94,7 +94,9 @@ export default {
       <button @click="sendCommand">Send</button>
     </div>
       
-      <h2>-- Story --</h2>
+    <p>&nbsp;</p>
+    <hr class="logo" />
+      <h2>Story</h2>
       <div v-for="notification in notifications" :key="notification">
         {{notification}}
       </div>
