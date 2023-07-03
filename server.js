@@ -21,6 +21,9 @@ app.post('/command', (req, res) => {
     case "Open":
       responseObject = ActionOpen(req.body, gamestate);
       break;
+    case "Key":
+      responseObject = ActionKey(req.body, gamestate);
+      break;
     case "Torch":
       responseObject = ActionTorch(req.body, gamestate);
       break;
@@ -97,9 +100,9 @@ function ActionExplore(requestBody, gamestate) {
     if (room.Objects && room.Objects.length > 0) {
       const objectInfoArray = room.Objects.map(obj => {
         if (obj.Lock) {
-          return  obj.Name + " (locked by " + obj.Lock + ")";
+          return obj.Name + " (locked by " + obj.Lock + ")";
         } else {
-          return  obj.Name;
+          return obj.Name;
         }
       });
       responseText += "This room has objects: " + objectInfoArray.join(", ") + ". ";
@@ -115,10 +118,10 @@ function ActionExplore(requestBody, gamestate) {
     } else responseText += "!";
     RaiseNotification(gamestate.Notifications, notificationText);
 
-    return  { message: responseText };
+    return { message: responseText, room: room.Name };
   } else {
-    
-    return  { message: "Room with name '" + roomName + "' has not been discovered." };
+
+    return { message: "Room with name '" + roomName + "' has not been discovered." };
   }
 }
 
@@ -139,7 +142,7 @@ function ActionOpen(requestBody, gamestate) {
       if (object.Name.toLowerCase().includes("door")) {
         if (object.Lock) {
           responseText += "This Door is locked by '" + object.Lock + "'.";
-          return  { message: responseText };
+          return { message: responseText };
         } else {
           let NewRoomId = object.GoesTo;
           let newRoom = gamestate.Rooms.find(room => room.Id == NewRoomId);
@@ -162,8 +165,49 @@ function ActionOpen(requestBody, gamestate) {
     return { message: responseText, room: responseRoom };
   } else {
     responseText += "Could not find room '" + roomName + "'.";
-    return  { message: responseText };
+    return { message: responseText };
   }
+}
+
+function ActionKey(requestBody, gamestate) {
+  let roomName = requestBody.Params["FromRoom"].toLowerCase();
+  let objectName = requestBody.Params["Object"].toLowerCase();
+  let keyColour = requestBody.Params["KeyColour"].toLowerCase();
+
+  let key = gamestate.Items.find(item => item.toLowerCase().includes(keyColour));
+  if (!key) {
+    responseText = "You do not have the " + keyColour + " key.";
+    return { message: responseText };
+  }
+
+  let room = gamestate.Rooms.find(room => room.Name.toLowerCase() == roomName);
+  if (!room) {
+    responseText = "Could not find room '" + roomName + "'.";
+    return { message: responseText };
+  }
+
+  let object = room.Objects.find(obj => obj.Name.toLowerCase() == objectName);
+  if (!object) {
+    responseText = "Could not find object '" + objectName + "' in room '" + roomName + "'.";
+    return { message: responseText };
+  }
+
+  if (!object.Lock) {
+    responseText = "The object '" + objectName + "' is not locked.";
+    return { message: responseText };
+  }
+
+  if (object.Lock.toLowerCase() != key.toLowerCase()) {
+    responseText = "The object '" + objectName + "' can only be unlocked by the " + object.Lock + ", not by the " + key + ".";
+    return { message: responseText };
+  }
+
+  object.Lock = null;
+
+  let notificationText = "The '" + object.Name + "' in " + room.Name + " has been unlocked with the " + key + "!";
+  let responseText = "Unlocked '" + object.Name + "' with the " + key + "!";
+  RaiseNotification(gamestate.Notifications, notificationText);
+  return { message: responseText };
 }
 
 function ActionTorch(requestBody, gamestate) {

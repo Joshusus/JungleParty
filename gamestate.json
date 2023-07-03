@@ -11,7 +11,7 @@
           },
           {
             "Name": "GreenKey",
-            "Actions": [{ "Name": "Key", "Params": ["Colour","Object"] }]
+            "Actions": [{ "Name": "Key", "Params": ["KeyColour","Object"] }]
           }
         ],
         "Objects": [
