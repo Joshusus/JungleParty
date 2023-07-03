@@ -24,6 +24,9 @@ app.post('/command', (req, res) => {
     case "Key":
       responseObject = ActionKey(req.body, gamestate);
       break;
+    case "Riddle":
+      responseObject = ActionRiddle(req.body, gamestate);
+      break;
     case "Torch":
       responseObject = ActionTorch(req.body, gamestate);
       break;
@@ -111,12 +114,12 @@ function ActionExplore(requestBody, gamestate) {
     if (newItems && newItems.length > 0) {
       notificationText += " Found " + newItems.length.toString() + " items!";
       responseText += " Found " + newItems.map(obj => obj.Name).join(", ");
+      if (newActions && newActions.length > 0) {
+        notificationText += " " + newItems.length.toString() + " new action unlocked!";
+        responseText += ": " + newItems.length.toString() + " new action unlocked!";
+      } else responseText += "!";
+      RaiseNotification(gamestate.Notifications, notificationText);
     }
-    if (newActions && newActions.length > 0) {
-      notificationText += " " + newItems.length.toString() + " new action unlocked!";
-      responseText += ": " + newItems.length.toString() + " new action unlocked!";
-    } else responseText += "!";
-    RaiseNotification(gamestate.Notifications, notificationText);
 
     return { message: responseText, room: room.Name };
   } else {
@@ -146,13 +149,14 @@ function ActionOpen(requestBody, gamestate) {
         } else {
           let NewRoomId = object.GoesTo;
           let newRoom = gamestate.Rooms.find(room => room.Id == NewRoomId);
-          if (newRoom.Discovered) responseText += "You walk through to room " + objectName + ".";
+          responseRoom = newRoom.Name;
+          if (newRoom.Discovered) responseText += "You walk through to room " + newRoom.Name + ".";
           else {
             newRoom.Discovered = true;
-            responseRoom = newRoom.Name;
             responseText += "You walk through and discover " + newRoom.Name + "!";
             if (newRoom.Dark) responseText += " This room is very dark...";
-            notificationText += "New room discovered: " + newRoom.Name;
+            notificationText += "New room discovered: " + newRoom.Name;            
+            RaiseNotification(gamestate.Notifications, notificationText);
           }
         }
       }
@@ -161,7 +165,6 @@ function ActionOpen(requestBody, gamestate) {
       return { message: responseText };
     }
 
-    RaiseNotification(gamestate.Notifications, notificationText);
     return { message: responseText, room: responseRoom };
   } else {
     responseText += "Could not find room '" + roomName + "'.";
@@ -176,36 +179,78 @@ function ActionKey(requestBody, gamestate) {
 
   let key = gamestate.Items.find(item => item.toLowerCase().includes(keyColour));
   if (!key) {
-    responseText = "You do not have the " + keyColour + " key.";
+    let responseText = "You do not have the " + keyColour + " key.";
     return { message: responseText };
   }
 
   let room = gamestate.Rooms.find(room => room.Name.toLowerCase() == roomName);
   if (!room) {
-    responseText = "Could not find room '" + roomName + "'.";
+    let responseText = "Could not find room '" + roomName + "'.";
     return { message: responseText };
   }
 
   let object = room.Objects.find(obj => obj.Name.toLowerCase() == objectName);
   if (!object) {
-    responseText = "Could not find object '" + objectName + "' in room '" + roomName + "'.";
+    let responseText = "Could not find object '" + objectName + "' in room '" + roomName + "'.";
     return { message: responseText };
   }
 
   if (!object.Lock) {
-    responseText = "The object '" + objectName + "' is not locked.";
+    let responseText = "The object '" + objectName + "' is not locked.";
     return { message: responseText };
   }
 
   if (object.Lock.toLowerCase() != key.toLowerCase()) {
-    responseText = "The object '" + objectName + "' can only be unlocked by the " + object.Lock + ", not by the " + key + ".";
+    let responseText = "The object '" + objectName + "' can only be unlocked by the " + object.Lock + ", not by the " + key + ".";
     return { message: responseText };
   }
 
   object.Lock = null;
 
   let notificationText = "The '" + object.Name + "' in " + room.Name + " has been unlocked with the " + key + "!";
-  let responseText = "Unlocked '" + object.Name + "' with the " + key + "!";
+  let responseText = "Unlocked '" + object.Name + "' with the " + key + "! Continue on, brave explorer...";
+  RaiseNotification(gamestate.Notifications, notificationText);
+  return { message: responseText };
+}
+
+function ActionRiddle(requestBody, gamestate) {
+  let roomName = requestBody.Params["FromRoom"].toLowerCase();
+  let objectName = requestBody.Params["Object"].toLowerCase();
+  let riddleAnswer = requestBody.Params["Answer"].toLowerCase();
+
+  let room = gamestate.Rooms.find(room => room.Name.toLowerCase() == roomName);
+  if (!room) {
+    let responseText = "Could not find room '" + roomName + "'.";
+    return { message: responseText };
+  }
+
+  let object = room.Objects.find(obj => obj.Name.toLowerCase() == objectName);
+  if (!object) {
+    let responseText = "Could not find object '" + objectName + "' in room '" + roomName + "'.";
+    return { message: responseText };
+  }
+
+  if (!object.Lock) {
+    let responseText = "The object '" + objectName + "' is not locked.";
+    return { message: responseText };
+  }
+
+  if (!object.Lock.toLowerCase().includes("riddle")) {
+    let responseText = "The object '" + objectName + "' can only be unlocked by the " + object.Lock + ", not by a riddle answer.";
+    return { message: responseText };
+  }
+
+  let RiddleData = gamestate.Riddles.find(riddle => riddle.Name.toLowerCase() == object.Lock.toLowerCase());
+
+  if (riddleAnswer.toLowerCase() != RiddleData.Answer.toLowerCase()) {
+    let responseText = "Wrong!";
+    return { message: responseText };
+  }
+
+  object.Lock = null;
+
+  let notificationText = "The '" + object.Name + "' in " + room.Name + " has been unlocked with the riddle answer: '" + riddleAnswer + "'!";
+  let responseText = "Correct! Unlocked " + object.Name + "! March forth intrepid venturer...";
   RaiseNotification(gamestate.Notifications, notificationText);
   return { message: responseText };
 }
