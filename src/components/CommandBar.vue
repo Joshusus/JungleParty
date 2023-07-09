@@ -17,6 +17,26 @@ export default {
       if (!this.gamestate.Notifications) return [];
       return this.gamestate.Notifications.slice().reverse();
     },
+    currentRoomData() {
+      if (!this.gamestate || !this.gamestate.Rooms || !this.currentRoom) return null;
+      return this.gamestate.Rooms.find(room => room.Name === this.currentRoom);
+    },
+    currentCommandInfo() {
+      if (!this.gamestate || !this.gamestate.Rooms || !this.command) return null;
+      if (this.command.toLowerCase() != "riddle") return null;
+
+      let hintText = [];
+      this.currentRoomData.Objects.forEach(object => {
+        if (object.Lock && object.Lock.toLowerCase().includes("riddle")) {
+          let relevantRiddleData = this.gamestate.Riddles.find(riddleData => riddleData.Name == object.Lock);
+          if (relevantRiddleData.Hint) {
+            hintText.push(object.Name + " (" + object.Lock + ") HINT: " + relevantRiddleData.Hint)
+          }
+        }
+      });
+
+      return hintText;
+    },
     defaultParamValue() {
       return function (param) {
         if (param === 'Room') {
@@ -86,12 +106,27 @@ export default {
   <div class="commandbar">
     <div>
       <div style="background-color:rgba(5,92,79,255)">
-        <div v-if="currentRoom">You are in Room: {{ currentRoom }}</div>
+        <div v-if="currentRoom">You are in Room: {{ currentRoom }}
+
+        <div v-if="currentRoomData && currentRoomData.Explored"> This room has objects: 
+          <span v-for="object in currentRoomData.Objects" :key="object.Name">
+            {{ object.Name }} <span v-if="object.Lock">(locked by {{ object.Lock }})</span>, 
+          </span>
+        </div>
+        <div v-else> This room has not been explored yet... </div>
+</div>
         <p>Please enter a command: </p>
         Action:
         <select list="commands" id="command" name="command" v-model="command">
           <option v-for="action in gamestate.Actions" :key="action.Name">{{ action.Name }}</option>
         </select>
+
+        <div v-if="currentCommandInfo">
+          <div v-for="info in currentCommandInfo" :key="info">
+            {{ info }}
+          </div>
+        </div>
+
         <div v-if="command">
           <div v-for="param in currentCommand.Params" :key="param">
             {{ param }}:

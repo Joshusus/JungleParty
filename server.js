@@ -79,6 +79,7 @@ function ActionExplore(requestBody, gamestate) {
 
   let room = gamestate.Rooms.find(room => room.Discovered && room.Name.toLowerCase() == roomName);
   if (room) {
+    room.Explored = true;
     let newItems = room.Items;
 
     // Update Items List
