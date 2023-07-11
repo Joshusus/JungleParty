@@ -63,6 +63,60 @@ app.get('/gamestate', (req, res) => {
   });
 });
 
+app.get('/reward/:Name', (req, res) => {
+  let rewardName = req.params.Name;
+  const gamestate = require('./gamestate.json');
+
+  let reward = gamestate.Rewards.find(reward => reward.Name.toLowerCase() == rewardName.toLowerCase());
+
+  if (!reward) {
+    res.status(400).send('Reward Id not found. ');
+    return;
+  }
+
+  if (reward.Discovered) {
+    res.status(400).send('Reward already found.');
+    return;
+  }
+
+  let responseText = "Reward activated! ";
+
+  if (reward.Items) {
+    gamestate.Items.push.apply(gamestate.Items, reward.Items);
+    responseText += "Items found: " + reward.Items.map(obj => obj.Name).join(", ") + ". ";
+
+    const newActions = reward.Items
+      .filter(item => item.hasOwnProperty('Actions'))
+      .map(item => item.Actions)
+      .flatMap(actions => actions)
+      .filter(action => !gamestate.Actions.some(existingAction => existingAction.Name === action.Name))
+
+    gamestate.Actions.push.apply(gamestate.Actions, newActions);
+  }
+
+  if (reward.Clues) {
+    for (const clue of reward.Clues) {
+      let RiddleData = gamestate.Riddles.find(riddle => riddle.Name.toLowerCase() == clue.Name.toLowerCase());
+      RiddleData.Clue = clue.Clue;
+    }
+    responseText += "Clues found: " + reward.Clues.map(clue => clue.Name).join(", ") + ". ";
+  }
+
+  reward.Discovered = true;
+
+  // Save the updated game state to the JSON file
+  fs.writeFile('./gamestate.json', JSON.stringify(gamestate), err => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error updating game state.');
+    } else {
+
+      RaiseNotification(gamestate.Notifications, responseText);
+      res.status(200).send(responseText);
+    }
+  });
+});
+
 // Start the server
 app.listen(3000, () => {
   console.log('Server listening on port 3000');
@@ -156,7 +210,7 @@ function ActionOpen(requestBody, gamestate) {
             newRoom.Discovered = true;
             responseText += "You walk through and discover " + newRoom.Name + "!";
             if (newRoom.Dark) responseText += " This room is very dark...";
-            notificationText += "New room discovered: " + newRoom.Name;            
+            notificationText += "New room discovered: " + newRoom.Name;
             RaiseNotification(gamestate.Notifications, notificationText);
           }
         }
