@@ -408,6 +408,12 @@
         "Object",
         "Answer"
       ]
+    },
+    {
+      "Name": "Water",
+      "Params": [
+        "Object"
+      ]
     }
   ],
   "Riddles": [

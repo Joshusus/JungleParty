@@ -27,6 +27,9 @@ app.post('/command', (req, res) => {
     case "Riddle":
       responseObject = ActionRiddle(req.body, gamestate);
       break;
+    case "Water":
+      responseObject = ActionWater(req.body, gamestate);
+      break;
     case "Torch":
       responseObject = ActionTorch(req.body, gamestate);
       break;
@@ -308,6 +311,52 @@ function ActionRiddle(requestBody, gamestate) {
   let responseText = "Correct! Unlocked " + object.Name + "! March forth intrepid venturer...";
   RaiseNotification(gamestate.Notifications, notificationText);
   return { message: responseText };
+}
+
+function ActionWater(requestBody, gamestate) {
+
+  let roomName = requestBody.Params["FromRoom"].toLowerCase();
+  let objectName = requestBody.Params["Object"].toLowerCase();
+
+  if (!objectName || objectName.replace(/\s/g, '').toLowerCase() === "watertank") {
+    return { message: "You cannot water this object!" };
+  }
+
+  let room = gamestate.Rooms.find(room => room.Name.toLowerCase() == roomName);
+  if (!room) {
+    let responseText = "Could not find room '" + roomName + "'.";
+    return { message: responseText };
+  }
+
+  let watertank = room.Objects.find(obj => obj.Name.toLowerCase() == objectName);
+
+  var waterBottle = items.find(function (item) {
+    return item.Name === 'Water Bottle';
+  });
+
+  if (!waterBottle) {
+    return { message: "You do not have any water bottles to use this action." };
+  }
+
+  if (watertank.CurrentWater == watertank.Target) {
+    return { message: "The water tank is already full - there is no further use from this object." };
+  }
+
+  // remove water bottle from inventory
+  var index = items.indexOf(waterBottle);
+  items.splice(index, 1);
+
+  watertank.CurrentWater += 1;
+  if (watertank.CurrentWater == watertank.Target) {
+    let unlockedObject = room.Objects.find(obj => obj.Name == watertank.Unlocks);
+    unlockedObject.Lock = null;
+        
+    let notificationText = "The '" + watertank.Target + "' in " + room.Name + " has been unlocked with the water tank!";  
+    RaiseNotification(gamestate.Notifications, notificationText);
+    return { message: "You pour water into the tank, and the water reaches the top! A creaking can be heard inside as mechanisms come to life... something has happened to " + watertank.Unlocks };
+  } else {
+    return { message: "You pour water into the tank, raising the water level. You can see something inside the tank rise slightly with the water..." };
+  }
 }
 
 function ActionTorch(requestBody, gamestate) {
