@@ -5,7 +5,7 @@ export default {
       command: '',
       sendParams: [],
       gamestate: {},
-      currentRoom: 'DarkFungiRoom',
+      currentRoom: 'Entrance',
       actionResponse: ''
     };
   },

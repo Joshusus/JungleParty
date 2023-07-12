@@ -145,15 +145,7 @@
           "Name": "GoldCoin"
         },
         {
-          "Name": "Flashlight",
-          "Actions": [
-            {
-              "Name": "TorchExplore",
-              "Params": [
-                "Room"
-              ]
-            }
-          ]
+          "Name": "Flashlight"
         }
       ],
       "Objects": [
