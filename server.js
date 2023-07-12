@@ -151,20 +151,21 @@ function ActionExplore(requestBody, gamestate) {
       if (!torch) {
         responseText += "This room is extremely dark... you fumble around blindly... ";
 
-        var foundSomething = randomIntFromInterval(1, 3);
+        var foundSomething = randomIntFromInterval(1, 5);
         if (foundSomething == 1 && (room.Items && room.Items.length)) {
           var foundItemIndex = randomIntFromInterval(0, room.Items.length);
           var foundItem = room.Items[foundItemIndex];
-          items.splice(founditem, 1);
           gamestate.Items.push(foundItem);
+          room.Items.splice(foundItemIndex, 1);
 
           responseText += "You manage to find a " + foundItem.Name;
-
-          return { message: responseText };
         }
+        else responseText += "You don't seem to find anything."
+        return { message: responseText };
       }
-      responseText += "This room is dark - you use your trusty flashight... " 
+      else responseText += "This room is dark - you use your trusty flashight... "
     }
+
 
     room.Explored = true;
 

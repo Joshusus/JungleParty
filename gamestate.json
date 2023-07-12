@@ -272,6 +272,7 @@
     {
       "Id": 13,
       "Name": "DarkFungiRoom",
+      "Discovered": true,
       "Dark": true,
       "Items": [
         {
