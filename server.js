@@ -247,6 +247,16 @@ function ActionOpen(requestBody, gamestate) {
             RaiseNotification(gamestate.Notifications, notificationText);
           }
         }
+      } else if (object.Name.toLowerCase().includes("exitTunnel")) {
+        // Exit!
+        if (object.Lock) {
+          responseText += "This is locked by '" + object.Lock + "'.";
+          return { message: responseText };
+        } else {
+          responseText += "you scrape through the dirt walls, fingers digging deep into the wet soil... light ahead.. pushing through leafy tendrils... ESCAPE! You have successfully escaped the lagoon - and with great riches in hand!";
+          notificationText = "*BONG BONG BONG* An explorer has escaped the lagoon!";
+          RaiseNotification(gamestate.Notifications, notificationText);
+        }
       }
     } else {
       responseText += "Could not find object '" + objectName + "'.";
@@ -388,7 +398,6 @@ function ActionWater(requestBody, gamestate) {
     return { message: "You pour water into the tank, raising the water level. You can see something inside the tank rise slightly with the water..." };
   }
 }
-
 
 function ActionCoin(requestBody, gamestate) {
 

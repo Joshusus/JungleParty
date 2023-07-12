@@ -384,7 +384,8 @@
         },
         {
           "Name": "ExitTunnel",
-          "GoesTo": 0
+          "GoesTo": 0,
+          "Lock": "WaterTank"
         }
       ]
     }
