@@ -5,7 +5,7 @@ export default {
       command: '',
       sendParams: [],
       gamestate: {},
-      currentRoom: 'Entrance',
+      currentRoom: 'EmperorsChamber',
       actionResponse: ''
     };
   },
@@ -110,7 +110,7 @@ export default {
 
           <div v-if="currentRoomData && currentRoomData.Explored"> This room has objects:
             <span v-for="object in currentRoomData.Objects" :key="object.Name">
-              {{ object.Name }} <span v-if="object.Lock">(locked by {{ object.Lock }})</span>,
+              {{ object.Name }}<span v-if="object.Lock"> (locked by {{ object.Lock }})</span>,
             </span>
           </div>
           <div v-else> This room has not been explored yet... </div>

@@ -30,8 +30,8 @@ app.post('/command', (req, res) => {
     case "Water":
       responseObject = ActionWater(req.body, gamestate);
       break;
-    case "Torch":
-      responseObject = ActionTorch(req.body, gamestate);
+    case "GiveCoin":
+      responseObject = ActionCoin(req.body, gamestate);
       break;
     default:
       console.log("Command '" + req.body.command + "' not recognized")
@@ -360,7 +360,7 @@ function ActionWater(requestBody, gamestate) {
 
   let watertank = room.Objects.find(obj => obj.Name.toLowerCase() == objectName);
 
-  var waterBottle = items.find(function (item) {
+  var waterBottle = gamestate.Items.find(function (item) {
     return item.Name === 'Water Bottle';
   });
 
@@ -373,8 +373,8 @@ function ActionWater(requestBody, gamestate) {
   }
 
   // remove water bottle from inventory
-  var index = items.indexOf(waterBottle);
-  items.splice(index, 1);
+  var index = gamestate.Items.indexOf(waterBottle);
+  gamestate.Items.splice(index, 1);
 
   watertank.CurrentWater += 1;
   if (watertank.CurrentWater == watertank.Target) {
@@ -389,8 +389,51 @@ function ActionWater(requestBody, gamestate) {
   }
 }
 
-function ActionTorch(requestBody, gamestate) {
-  //TODO
+
+function ActionCoin(requestBody, gamestate) {
+
+  let roomName = requestBody.Params["FromRoom"].toLowerCase();
+  let objectName = requestBody.Params["Object"].toLowerCase();
+
+  if (!objectName || !objectName.replace(/\s/g, '').toLowerCase() === "cointank") {
+    return { message: "You cannot give coins to this object!" };
+  }
+
+  let room = gamestate.Rooms.find(room => room.Name.toLowerCase() == roomName);
+  if (!room) {
+    let responseText = "Could not find room '" + roomName + "'.";
+    return { message: responseText };
+  }
+
+  let cointank = room.Objects.find(obj => obj.Name.toLowerCase() == objectName);
+
+  var waterBottle = gamestate.Items.find(function (item) {
+    return item.Name === 'GoldCoin';
+  });
+
+  if (!waterBottle) {
+    return { message: "You do not have any coins to use this action." };
+  }
+
+  if (cointank.CurrentCoins == cointank.Target) {
+    return { message: "The coin tank is already full! This opened the " + cointank.Target };
+  }
+
+  // remove water bottle from inventory
+  var index = gamestate.Items.indexOf(waterBottle);
+  gamestate.Items.splice(index, 1);
+
+  cointank.CurrentCoins += 1;
+  if (cointank.CurrentCoins == cointank.Target) {
+    let unlockedObject = room.Objects.find(obj => obj.Name == cointank.Unlocks);
+    unlockedObject.Lock = null;
+
+    let notificationText = "The '" + cointank.Target + "' in " + room.Name + " has been unlocked with the coin tank!";
+    RaiseNotification(gamestate.Notifications, notificationText);
+    return { message: "You enter the final coin.. a rumble shakes the room! The " + cointank.Unlocks + " unlocks - revealing the way!!!" };
+  } else {
+    return { message: "You slot a coin into the tank. You require " + (cointank.Target - cointank.CurrentCoins) + " more coins!" };
+  }
 }
 
 function randomIntFromInterval(min, max) { // min and max included 

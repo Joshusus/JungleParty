@@ -414,6 +414,12 @@
       "Params": [
         "Object"
       ]
+    },
+    {
+      "Name": "GiveCoin",
+      "Params": [
+        "Object"
+      ]
     }
   ],
   "Riddles": [
