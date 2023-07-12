@@ -26,16 +26,18 @@ export default {
 </script>
 
 <template>
-  <div class="commandbar">
-    <div style="background-color:darkseagreen">      
+  <div>
+    <div style="background-color:rgba(5,92,79,255)">
 
         <h2>Items:</h2>
         <ul v-for="item in gamestate.Items" :key="item">
           <li>{{item}}</li>
         </ul>
 
+        <hr/>
 
-        <h2>Actions (derived from inventory items):</h2>
+        <h2>Actions:</h2>
+        <p style="font-style: italic;">(derived from inventory items)</p>
         <ul v-for="item in gamestate.Actions" :key="item.Name">
           <li>{{item.Name}}</li>
         </ul>

@@ -4,19 +4,12 @@ import Inventory from '../components/Inventory.vue'
 
 <template>
   <div class="about">
-    <h1>Inventory</h1>
 
-    <Inventory />
+    <div class="page" style="padding-top: 0px;">
+      <h2>Inventory</h2>
+      <Inventory />
+    </div>
 
   </div>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-</style>

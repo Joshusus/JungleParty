@@ -105,35 +105,39 @@ export default {
 <template>
   <div class="commandbar">
     <div>
-      <div style="background-color:rgba(5,92,79,255)">
+      <div>
         <div v-if="currentRoom">You are in Room: {{ currentRoom }}
 
-        <div v-if="currentRoomData && currentRoomData.Explored"> This room has objects: 
-          <span v-for="object in currentRoomData.Objects" :key="object.Name">
-            {{ object.Name }} <span v-if="object.Lock">(locked by {{ object.Lock }})</span>, 
-          </span>
-        </div>
-        <div v-else> This room has not been explored yet... </div>
-</div>
-        <p>Please enter a command: </p>
-        Action:
-        <select list="commands" id="command" name="command" v-model="command">
-          <option v-for="action in gamestate.Actions" :key="action.Name">{{ action.Name }}</option>
-        </select>
-
-        <div v-if="currentCommandInfo">
-          <div v-for="info in currentCommandInfo" :key="info">
-            {{ info }}
+          <div v-if="currentRoomData && currentRoomData.Explored"> This room has objects:
+            <span v-for="object in currentRoomData.Objects" :key="object.Name">
+              {{ object.Name }} <span v-if="object.Lock">(locked by {{ object.Lock }})</span>,
+            </span>
           </div>
+          <div v-else> This room has not been explored yet... </div>
         </div>
 
-        <div v-if="command">
-          <div v-for="param in currentCommand.Params" :key="param">
-            {{ param }}:
-            <input class="actionParam" type="text" :id="param" :value="defaultParamValue(param)" />
+        <div style="background-color:rgba(5,92,79,255)">
+          <p>Please enter a command: </p>
+          Action:
+          <select list="commands" id="command" name="command" v-model="command">
+            <option v-for="action in gamestate.Actions" :key="action.Name">{{ action.Name }}</option>
+          </select>
+
+          <div v-if="currentCommandInfo">
+            <div v-for="info in currentCommandInfo" :key="info">
+              {{ info }}
+            </div>
           </div>
+
+          <div v-if="command">
+            <div v-for="param in currentCommand.Params" :key="param">
+              {{ param }}:
+              <input class="actionParam" type="text" :id="param" :value="defaultParamValue(param)" />
+            </div>
+          </div>
+          <button @click="sendCommand">Send</button>
         </div>
-        <button @click="sendCommand">Send</button>
+
       </div>
 
       <div>
@@ -150,6 +154,18 @@ export default {
 
       <p>&nbsp;</p>
       <hr class="logo" />
+
+      <h2>Discovered Rooms: </h2>
+      <div v-for="room in gamestate.Rooms" :key="room.Id">
+        <p v-if="room.Discovered">
+          {{ room.Name }}
+        </p>
+      </div>
+
+      <p>&nbsp;</p>
+      <hr class="logo" />
+
+
     </div>
 
   </div>

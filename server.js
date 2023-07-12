@@ -136,14 +136,45 @@ function ActionExplore(requestBody, gamestate) {
 
   let room = gamestate.Rooms.find(room => room.Discovered && room.Name.toLowerCase() == roomName);
   if (room) {
+
+    let responseText = "Exploring '" + roomName + "': ";
+    let notificationText = "Exploring '" + roomName + "': ";
+
+    if (room.Flooded) {
+      // TODO check for scuba gear
+      responseText += "This room is completely flooded - you won't be able to explore this room any further without some serious diving equipment..."
+      return { message: responseText };
+    }
+
+    if (room.Dark) {
+      var torch = gamestate.Items.find(item => item.Name.toLowerCase() == "flashlight");
+      if (!torch) {
+        responseText += "This room is extremely dark... you fumble around blindly... ";
+
+        var foundSomething = randomIntFromInterval(1, 3);
+        if (foundSomething == 1 && (room.Items && room.Items.length)) {
+          var foundItemIndex = randomIntFromInterval(0, room.Items.length);
+          var foundItem = room.Items[foundItemIndex];
+          items.splice(founditem, 1);
+          gamestate.Items.push(foundItem);
+
+          responseText += "You manage to find a " + foundItem.Name;
+
+          return { message: responseText };
+        }
+      }
+      responseText += "This room is dark - you use your trusty flashight... " 
+    }
+
     room.Explored = true;
+
     let newItems = room.Items;
 
     // Update Items List
     let newItemNames = newItems.map(item => item.Name);
     gamestate.Items.push.apply(gamestate.Items, newItemNames);
 
-    //Clear Items in room
+    // Clear Items in room
     room.Items = [];
 
     // Update Actions List
@@ -155,9 +186,7 @@ function ActionExplore(requestBody, gamestate) {
 
     gamestate.Actions.push.apply(gamestate.Actions, newActions);
 
-    let responseText = "Exploring '" + roomName + "': ";
-    let notificationText = "Exploring '" + roomName + "': ";
-
+    // Info text
     if (room.Objects && room.Objects.length > 0) {
       const objectInfoArray = room.Objects.map(obj => {
         if (obj.Lock) {
@@ -350,8 +379,8 @@ function ActionWater(requestBody, gamestate) {
   if (watertank.CurrentWater == watertank.Target) {
     let unlockedObject = room.Objects.find(obj => obj.Name == watertank.Unlocks);
     unlockedObject.Lock = null;
-        
-    let notificationText = "The '" + watertank.Target + "' in " + room.Name + " has been unlocked with the water tank!";  
+
+    let notificationText = "The '" + watertank.Target + "' in " + room.Name + " has been unlocked with the water tank!";
     RaiseNotification(gamestate.Notifications, notificationText);
     return { message: "You pour water into the tank, and the water reaches the top! A creaking can be heard inside as mechanisms come to life... something has happened to " + watertank.Unlocks };
   } else {
@@ -361,4 +390,8 @@ function ActionWater(requestBody, gamestate) {
 
 function ActionTorch(requestBody, gamestate) {
   //TODO
+}
+
+function randomIntFromInterval(min, max) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min)
 }

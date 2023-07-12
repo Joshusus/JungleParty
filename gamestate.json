@@ -292,7 +292,14 @@
       "Id": 14,
       "Name": "TempleCourtyard",
       "Items": [],
-      "Objects": [
+      "Objects": [        
+        {
+          "Name": "WaterTank",
+          "CurrentWater": 0,
+          "Target": 2,
+          "Unlocks": "Water",
+          "Room": 6
+        },
         {
           "Name": "Door1",
           "GoesTo": 8
