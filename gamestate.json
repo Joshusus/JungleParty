@@ -384,8 +384,18 @@
         },
         {
           "Name": "ExitTunnel",
-          "GoesTo": 0,
-          "Lock": "WaterTank"
+          "GoesTo": 18,
+          "Lock": "CoinTank"
+        }
+      ]
+    },
+    {
+      "Id": 18,
+      "Name": "Freedom!",
+      "Items": [],
+      "Objects": [
+        {
+          "Name": "The Party (It's fuckin kickin' off mate)"
         }
       ]
     }

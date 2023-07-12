@@ -247,8 +247,9 @@ function ActionOpen(requestBody, gamestate) {
             RaiseNotification(gamestate.Notifications, notificationText);
           }
         }
-      } else if (object.Name.toLowerCase().includes("exitTunnel")) {
-        // Exit!
+      }
+      // Exit!
+      else if (object.Name.toLowerCase().includes("exittunnel")) {
         if (object.Lock) {
           responseText += "This is locked by '" + object.Lock + "'.";
           return { message: responseText };
@@ -256,6 +257,7 @@ function ActionOpen(requestBody, gamestate) {
           responseText += "you scrape through the dirt walls, fingers digging deep into the wet soil... light ahead.. pushing through leafy tendrils... ESCAPE! You have successfully escaped the lagoon - and with great riches in hand!";
           notificationText = "*BONG BONG BONG* An explorer has escaped the lagoon!";
           RaiseNotification(gamestate.Notifications, notificationText);
+          return { message: responseText, room: "Freedom!" };
         }
       }
     } else {
