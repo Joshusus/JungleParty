@@ -33,6 +33,9 @@ app.post('/command', (req, res) => {
     case "GiveCoin":
       responseObject = ActionCoin(req.body, gamestate);
       break;
+    case "Machete":
+      responseObject = ActionMachete(req.body, gamestate);
+      break;
     default:
       console.log("Command '" + req.body.command + "' not recognized")
   }
@@ -141,9 +144,14 @@ function ActionExplore(requestBody, gamestate) {
     let notificationText = "Exploring '" + roomName + "': ";
 
     if (room.Flooded) {
-      // TODO check for scuba gear
-      responseText += "This room is completely flooded - you won't be able to explore this room any further without some serious diving equipment..."
-      return { message: responseText };
+      var scubaGear = gamestate.Items.find(item => item.Name.toLowerCase() == "scubagear");
+      if (!scubaGear) {
+        responseText += "This room is completely flooded - you won't be able to explore this room any further without some serious diving equipment..."
+        return { message: responseText };
+      }
+      else {
+        responseText += "This room is flooded - lucky you have some scuba gear! ";
+      }
     }
 
     if (room.Dark) {
@@ -445,6 +453,46 @@ function ActionCoin(requestBody, gamestate) {
   } else {
     return { message: "You slot a coin into the tank. You require " + (cointank.Target - cointank.CurrentCoins) + " more coins!" };
   }
+}
+
+function ActionMachete(requestBody, gamestate) {
+  let roomName = requestBody.Params["FromRoom"].toLowerCase();
+  let objectName = requestBody.Params["Object"].toLowerCase();
+
+  var machete = gamestate.Items.find(item => item.Name.toLowerCase() == "machete");
+  if (!machete) {
+    let responseText = "You do not have a machete!";
+    return { message: responseText };
+  }
+
+  let room = gamestate.Rooms.find(room => room.Name.toLowerCase() == roomName);
+  if (!room) {
+    let responseText = "Could not find room '" + roomName + "'.";
+    return { message: responseText };
+  }
+
+  let object = room.Objects.find(obj => obj.Name.toLowerCase() == objectName);
+  if (!object) {
+    let responseText = "Could not find object '" + objectName + "' in room '" + roomName + "'.";
+    return { message: responseText };
+  }
+
+  if (!object.Lock) {
+    let responseText = "The object '" + objectName + "' is not locked.";
+    return { message: responseText };
+  }
+
+  if (object.Lock.toLowerCase() != machete.toLowerCase()) {
+    let responseText = "The object '" + objectName + "' can only be unlocked by the " + object.Lock + ", not by a machete.";
+    return { message: responseText };
+  }
+
+  object.Lock = null;
+
+  let notificationText = "The '" + object.Name + "' in " + room.Name + " has been unlocked with the machete!";
+  let responseText = "You chop through the vines, and cut a path through the '" + object.Name + "' with the " + machete + "! Continue on, brave explorer...";
+  RaiseNotification(gamestate.Notifications, notificationText);
+  return { message: responseText };
 }
 
 function randomIntFromInterval(min, max) { // min and max included 
