@@ -440,20 +440,76 @@
   "Riddles": [
     {
       "Name": "Riddle1",
-      "Question": "Test riddle question",
-      "Answer": "poop",
+      "Question": "In the Amazon's heart, a whispering sound,      Where life thrives, secrets are found.      I'm tiny and elusive, hard to spot,      Yet my presence is vital, believe it or not.      I feed on dead matter, decay my delight,      Recycling nutrients, hidden from sight.      What am I, hidden below the green?      A decomposer, part of nature's unseen team.",
+      "Answer": "fungi",
       "Completed": false
     },
     {
       "Name": "Riddle2",
-      "Question": "Test riddle question",
-      "Answer": "scoop",
+      "Question": "I'm a master architect, skilled and bold,      In the rainforest realm, my tales unfold.      Beneath fallen logs, in leaf litter's layer,      A complex network, a fortress I bear.      In underground tunnels, my kingdom lies,      With chambers and corridors, an unseen prize.      What am I, with tunnels below?",
+      "Answer": "ant",
+      "Completed": false
+    },
+    {
+      "Name": "Riddle3",
+      "Question": "Through dense vegetation, I swiftly glide,      A vibrant plumage, my pride to confide.      I mimic the poisonous, a clever guise,      Predators beware, their hunger defies.      My wingspan's vast, a dancer in the sky,      I soar through the rainforest, my lullaby.",
+      "Answer": "butterfly",
+      "Completed": false
+    },
+    {
+      "Name": "Riddle4",
+      "Question": "In the rainforest's depths, where shadows play,      A creature lurks, concealed by the day.      My venom is potent, a deadly injection,      But some use my poison with great affection.      What am I, with toxins so vast?",
+      "Answer": "frog",
+      "Completed": false
+    },
+    {
+      "Name": "Riddle5",
+      "Question": "In the dense treetops, I swing and sway,      With prehensile tail, I'm agile in play.      My relatives soar, but I'm bound to the trees,      In the rainforest realm, I glide with ease.      What am I, acrobat of the air?",
+      "Answer": "monkey",
       "Completed": false
     }
   ],
   "Rewards": [
     {
       "Name": "bigtiddy",
+      "Items": [
+        {
+          "Name": "GoldCoin"
+        },
+        {
+          "Name": "GoldCoin"
+        }
+      ]
+    },
+    {
+      "Name": "cockgoblin",
+      "Items": [
+        {
+          "Name": "GoldCoin"
+        },
+        {
+          "Name": "GoldCoin"
+        }
+      ]
+    },
+    {
+      "Name": "anteater",
+      "Items": [
+        {
+          "Name": "GoldCoin"
+        }
+      ]
+    },
+    {
+      "Name": "gimp",
+      "Items": [
+        {
+          "Name": "GoldCoin"
+        }
+      ]
+    },
+    {
+      "Name": "jjtest",
       "Items": [
         {
           "Name": "GoldCoin"
@@ -465,7 +521,43 @@
       "Clues": [
         {
           "Name": "Riddle1",
-          "Clue": "The answer is \"poop\""
+          "Clue": "Similar to a plant..."
+        }
+      ]
+    },
+    {
+      "Name": "twatt",
+      "Clues": [
+        {
+          "Name": "Riddle2",
+          "Clue": "One of my variants is the leafcutter..."
+        }
+      ]
+    },
+    {
+      "Name": "horse",
+      "Clues": [
+        {
+          "Name": "Riddle3",
+          "Clue": "Small flyer"
+        }
+      ]
+    },
+    {
+      "Name": "beans",
+      "Clues": [
+        {
+          "Name": "Riddle4",
+          "Clue": "Croak"
+        }
+      ]
+    },
+    {
+      "Name": "fury",
+      "Clues": [
+        {
+          "Name": "Riddle5",
+          "Clue": "One of my variants is the spider..."
         }
       ]
     },
