@@ -61,7 +61,7 @@ export default {
       }
 
       // Send the command to the server using AJAX
-      fetch('http://localhost:3000/command', {
+      fetch('https://jjapi.onrender.com/command', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -85,7 +85,7 @@ export default {
     },
     fetchGamestate() {
       // Fetch the game state from the server on page load
-      fetch('http://localhost:3000/gamestate')
+      fetch('https://jjapi.onrender.com/gamestate')
         .then(response => response.json())
         .then(data => {
           this.gamestate = data;
