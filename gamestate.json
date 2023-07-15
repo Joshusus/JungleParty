@@ -289,7 +289,7 @@
           "Name": "A Gecko (Called Rupert)"
         }
       ],
-      "Objects": [        
+      "Objects": [
         {
           "Name": "WaterTank",
           "CurrentWater": 0,
@@ -483,6 +483,14 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "Name": "buttpluggg",
+      "Items": [
+        {
+          "Name": "ScubaGear"
         }
       ]
     }
